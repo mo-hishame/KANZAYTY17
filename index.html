@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>كنزايتى الكلبه ❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Comfortaa:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg-cream: #fbf5ee;
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --primary-burgundy: #8b263e;
+      --accent-pink: #e8b4b8;
+      --text-dark: #4a3e3d;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px 10px 100px 10px;
+    }
+
+    .heart-particle {
+      position: fixed;
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 0;
+      animation: floatUp 6s linear infinite;
+      opacity: 0.6;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0.8; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Lock Screen */
+    .lock-screen {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #f4eae1;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+    .lock-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .envelope-card {
+      background: #e8d8c8;
+      width: 100%;
+      max-width: 320px;
+      border-radius: 15px;
+      padding: 25px 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 1px solid #d8c2b0;
+      text-align: center;
+    }
+
+    .envelope-header {
+      background: #ffffff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-family: 'Cairo', sans-serif;
+      color: #6a4a3c;
+      font-size: 14px;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .wax-seal {
+      width: 65px; height: 65px;
+      background: var(--primary-burgundy);
+      border-radius: 50%;
+      margin: 0 auto 20px auto;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 26px;
+      box-shadow: 0 4px 15px rgba(139, 38, 62, 0.3);
+    }
+
+    .pass-input {
+      width: 100%; padding: 10px 15px;
+      border-radius: 20px; border: 1px solid #d0bcac;
+      background: #fbf5ee; color: var(--text-dark);
+      text-align: center; font-size: 15px; outline: none; margin-bottom: 15px;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .btn-unlock {
+      width: 100%; padding: 10px; border-radius: 20px; border: none;
+      background: var(--primary-burgundy); color: #fff; font-weight: 600;
+      font-size: 14px; cursor: pointer;
+    }
+
+    /* Main Container */
+    .app-container {
+      width: 100%; max-width: 420px;
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+
+    .exact-card {
+      background: var(--card-bg);
+      border-radius: 25px;
+      padding: 25px 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.04);
+      border: 1px solid rgba(255,255,255,0.8);
+      position: relative; text-align: center;
+    }
+
+    .title-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #f3e5db; padding: 6px 18px; border-radius: 20px;
+      font-size: 15px; color: var(--primary-burgundy); font-weight: 700; margin-bottom: 15px;
+    }
+
+    .msg-content { font-size: 15px; line-height: 1.8; color: var(--text-dark); text-align: right; padding: 10px 5px; }
+
+    .section-header {
+      font-size: 16px;
+      color: var(--primary-burgundy);
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    /* 1. Interactive Flip Cards Grid */
+    .flip-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 15px 0;
+    }
+
+    .flip-card {
+      background-color: transparent;
+      height: 140px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+      border-radius: 18px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+    }
+
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-front, .flip-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .flip-front {
+      background: #f7ece1;
+      border: 2px dashed #e0cfc2;
+      color: var(--primary-burgundy);
+    }
+
+    .flip-front .icon { font-size: 28px; margin-bottom: 5px; }
+    .flip-front span { font-size: 13px; font-weight: 700; }
+    .tap-hint { font-size: 10px; color: #a08878; margin-top: 4px; }
+
+    .flip-back {
+      background: var(--primary-burgundy);
+      color: #ffffff;
+      transform: rotateY(180deg);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    /* 2. Tap to Reveal Secret Notes */
+    .secret-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .secret-note {
+      background: #f9f2eb;
+      border: 1px solid #e8d8c8;
+      border-radius: 15px;
+      padding: 12px 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: right;
+    }
+
+    .secret-note .secret-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-burgundy);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .secret-note .secret-body {
+      font-size: 12px;
+      color: var(--text-dark);
+      margin-top: 8px;
+      display: none;
+      line-height: 1.6;
+      border-top: 1px dashed #d8c2b0;
+      padding-top: 8px;
+    }
+
+    .secret-note.open {
+      background: #ffffff;
+      border-color: var(--accent-pink);
+    }
+
+    .secret-note.open .secret-body {
+      display: block;
+    }
+
+    /* Timer Grid & Flip Animation */
+    .timer-subtitle { font-size: 12px; color: #9a8075; margin-bottom: 12px; }
+    .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .timer-item { 
+      background: #fcf8f4; 
+      border-radius: 12px; 
+      padding: 10px 4px; 
+      border: 1px solid #f0e2d5; 
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      overflow: hidden;
+      perspective: 400px;
+    }
+    
+    .timer-val { 
+      font-size: 18px; 
+      font-weight: 800; 
+      color: var(--primary-burgundy); 
+      display: block; 
+      transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
+    }
+
+    .timer-item.flip-anim .timer-val {
+      transform: rotateX(-90deg);
+      opacity: 0;
+    }
+    
+    .timer-item.pop { 
+      transform: scale(1.12); 
+      background: #fcece8; 
+      border-color: var(--accent-pink); 
+    }
+    
+    .timer-lbl { font-size: 10px; color: #a08878; margin-top: 2px; }
+
+    /* Fixed Music Player */
+    .music-bar-fixed {
+      position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+      width: 92%; max-width: 390px; background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px); border-radius: 30px; padding: 8px 15px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 500;
+    }
+    .music-info { display: flex; align-items: center; gap: 10px; }
+    .album-art { width: 38px; height: 38px; border-radius: 50%; background: #e8b4b8; display: flex; align-items: center; justify-content: center; font-size: 18px; animation: spin 8s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .track-details { text-align: right; }
+    .track-title { font-size: 12px; font-weight: 700; }
+    .track-sub { font-size: 10px; color: #9a8075; }
+    .btn-play-pause { background: none; border: none; font-size: 20px; color: var(--primary-burgundy); cursor: pointer; }
+
+    .qr-top-btn {
+      position: fixed; top: 12px; left: 12px; z-index: 100;
+      background: rgba(255,255,255,0.85); border: 1px solid #e0cfc2;
+      padding: 6px 14px; border-radius: 20px; font-size: 12px;
+      font-family: 'Cairo', sans-serif; cursor: pointer; color: var(--primary-burgundy);
+    }
+    
+    /* QR Modal Styles */
+    .qr-modal { 
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.6); z-index: 2000; display: none; 
+      align-items: center; justify-content: center; padding: 20px; 
+    }
+    
+    .qr-box-styled {
+      background: #ffffff;
+      width: 100%;
+      max-width: 320px;
+      padding: 30px 20px;
+      border-radius: 30px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+
+    .qr-subtitle-top {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: #9a8075;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .qr-main-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary-burgundy);
+      letter-spacing: 1px;
+    }
+
+    .qr-sub-desc {
+      font-size: 12px;
+      color: #a08878;
+      margin-bottom: 20px;
+    }
+
+    .heart-qr-frame {
+      position: relative;
+      width: 230px;
+      height: 230px;
+      margin: 0 auto 20px auto;
+      border: 4px solid var(--primary-burgundy);
+      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(139, 38, 62, 0.15);
+    }
+
+    #qrcode img, #qrcode canvas {
+      width: 135px !important;
+      height: 135px !important;
+    }
+
+    .btn-download-qr {
+      background: var(--primary-burgundy);
+      color: #fff;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 25px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(139, 38, 62, 0.3);
+      margin-bottom: 15px;
+    }
+
+    .qr-footer-link {
+      font-size: 11px;
+      color: var(--primary-burgundy);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .qr-footer-sub {
+      font-size: 10px;
+      color: #b09888;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="qr-top-btn" onclick="openQR()">📱 باركود الموقع</button>
+
+  <div class="lock-screen" id="lockScreen">
+    <div class="envelope-card">
+      <div class="envelope-header">كل سنه وانت طيبه يبنت زيناهم ❤️</div>
+      <div class="wax-seal">👩‍❤️‍👨</div>
+      <div style="font-size: 12px; color: #a08878; font-weight: 700; margin-bottom: 10px;">اكتبي كود السر</div>
+      <input type="text" id="passInput" class="pass-input" placeholder="• كنزايتى •" autofocus>
+      <button class="btn-unlock" onclick="unlock()">Unlock 💕</button>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <!-- Message Card -->
+    <div class="exact-card">
+      <div class="title-tag"><span>💕</span> كنزايتى الكلبه <span>💕</span></div>
+      <div class="msg-content">
+        كل سنه وانتى طيبه يا كنزايتى سنين العمر كلها مع بعض يارب وربنا يزيد الاخوه الى ما بينا و تلمى لسانك يا فضحانا فى كل حته و تسمعى الكلام احلى 150 سم يعم فى ثانويه 🌸✨
+      </div>
+    </div>
+
+    <!-- Interactive Creative Cards -->
+    <div class="exact-card">
+      <div class="section-header">ألبوم الذكريات التفاعلي 💌</div>
+      <div style="font-size: 11px; color: #a08878; margin-bottom: 10px;">اضغطي على الكروت عشان تكتشفي السر!</div>
+      
+      <div class="flip-grid">
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-front">
+              <div class="icon">📏</div>
+              <span>الشبر ونص</span>
+              <span class="tap-hint">اضغطي هنا 👈</span>
+            </div>
+            <div class="flip-back">
+              احلى 150 سم في مجرة درب التبانة كلها! 🙈✨
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-front">
+              <div class="icon">🔊</div>
+              <span>ام لسانين</span>
+              <span class="tap-hint">اضغطي هنا 👈</span>
+            </div>
+            <div class="flip-back">
+              فضاحتنا في كل حته بلسانك اللي عايز قطعه ده! 🤐😂
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-front">
+              <div class="icon">📚</div>
+              <span>الفاشله</span>
+              <span class="tap-hint">اضغطي هنا 👈</span>
+            </div>
+            <div class="flip-back">
+              أجدع وأشطر ثانوية عامة وإن شاء الله حلمك يتحقق 🎓❤️
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-front">
+              <div class="icon">👭</div>
+              <span>MY BEST</span>
+              <span class="tap-hint">اضغطي هنا 👈</span>
+            </div>
+            <div class="flip-back">
+              ربنا يزيد الأخوة والروقـان وما يحرمناش من بعض أبداً 🌸
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tap to Reveal Secret Messages -->
+    <div class="exact-card">
+      <div class="section-header">رسائل محفورة في السريّة 🤫</div>
+      <div class="secret-list">
+        
+        <div class="secret-note" onclick="this.classList.toggle('open')">
+          <div class="secret-title">
+            <span>شفرة رقم 1: نصيحة العمر 💡</span>
+            <span>▼</span>
+          </div>
+          <div class="secret-body">
+            يا كنزايتي ركزي في دروسك وبلاش لكاعة عشان نفرح بيكي وبأعلى مجموع! 💪
+          </div>
+        </div>
+
+        <div class="secret-note" onclick="this.classList.toggle('open')">
+          <div class="secret-title">
+            <span>شفرة رقم 2: الحقيقة المرة 🙈</span>
+            <span>▼</span>
+          </div>
+          <div class="secret-body">
+            مهما كبرتي ومهما عملتي هتفضلي الكلبة الصغيرة اللي بنحبها برضه ❤️
+          </div>
+        </div>
+
+        <div class="secret-note" onclick="this.classList.toggle('open')">
+          <div class="secret-title">
+            <span>شفرة رقم 3: الأهم على الإطلاق ✨</span>
+            <span>▼</span>
+          </div>
+          <div class="secret-body">
+            كل سنة وأنتي طيبة وفي صحة وسعادة وراحة بال يا رب 🌸
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Countdown Timer -->
+    <div class="exact-card">
+      <div class="title-tag"><span>⏳</span> عد تنازلي لـ 1/12/2026</div>
+      <div class="timer-subtitle">سوا من 12 يناير 2022 - الساعة 5:00 الفجر 💕</div>
+      <div class="timer-grid">
+        <div class="timer-item" id="item-d"><span class="timer-val" id="days">00</span><span class="timer-lbl">يوم</span></div>
+        <div class="timer-item" id="item-h"><span class="timer-val" id="hours">00</span><span class="timer-lbl">ساعة</span></div>
+        <div class="timer-item" id="item-m"><span class="timer-val" id="minutes">00</span><span class="timer-lbl">دقيقة</span></div>
+        <div class="timer-item" id="item-s"><span class="timer-val" id="seconds">00</span><span class="timer-lbl">ثانية</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="music-bar-fixed">
+    <div class="music-info">
+      <div class="album-art">🎶</div>
+      <div class="track-details">
+        <div class="track-title">رامي صبري - كل سنة 😍</div>
+        <div class="track-sub">كنزايتى ❤️</div>
+      </div>
+    </div>
+    <button class="btn-play-pause" onclick="toggleAudio()" id="playBtn">▶️</button>
+    <audio id="bgMusic" loop preload="auto" src="song.mp3"></audio>
+  </div>
+
+  <!-- QR Modal -->
+  <div class="qr-modal" id="qrModal" onclick="closeQR()">
+    <div class="qr-box-styled" onclick="event.stopPropagation()">
+      <div class="qr-subtitle-top">- Love Note -</div>
+      <div class="qr-main-title">KANZAYAA</div>
+      <div class="qr-sub-desc">Heart QR</div>
+      
+      <div class="heart-qr-frame">
+        <div id="qrcode"></div>
+      </div>
+      
+      <button class="btn-download-qr" onclick="closeQR()">إغلاق النافذة</button>
+      <a href="https://mo-hishame.github.io/KANZAYAA/" target="_blank" class="qr-footer-link">mo-hishame.github.io/KANZAYAA/</a>
+      <div class="qr-footer-sub">اضغط للفتح • صنع بحب</div>
+    </div>
+  </div>
+
+  <script>
+    function createHearts() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart-particle');
+      heart.innerText = ['🤎', '🌸', '💕', '✨'][Math.floor(Math.random() * 4)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+    setInterval(createHearts, 600);
+
+    function unlock() {
+      const val = document.getElementById('passInput').value.trim();
+      if (val === 'كنزايتى') {
+        document.getElementById('lockScreen').classList.add('hidden');
+        playAudio();
+      } else {
+        alert('كلمة السر غلط يا كنزايتي! جربي تاني 😉');
+      }
+    }
+
+    const audio = document.getElementById('bgMusic');
+    const playBtn = document.getElementById('playBtn');
+    let isPlaying = false;
+
+    function playAudio() {
+      audio.play().then(() => {
+        isPlaying = true;
+        playBtn.innerText = '⏸️';
+      }).catch(e => console.log('Autoplay:', e));
+    }
+
+    function toggleAudio() {
+      if (isPlaying) {
+        audio.pause();
+        playBtn.innerText = '▶️';
+        isPlaying = false;
+      } else {
+        playAudio();
+      }
+    }
+
+    const targetDate = new Date('2026-12-01T00:00:00').getTime();
+    
+    function updateTimer() {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+      if (diff > 0) {
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+        setValWithAnim('days', 'item-d', d);
+        setValWithAnim('hours', 'item-h', String(h).padStart(2, '0'));
+        setValWithAnim('minutes', 'item-m', String(m).padStart(2, '0'));
+        setValWithAnim('seconds', 'item-s', String(s).padStart(2, '0'));
+      }
+    }
+
+    function setValWithAnim(id, itemId, val) {
+      const el = document.getElementById(id);
+      if (el.innerText !== String(val)) {
+        const item = document.getElementById(itemId);
+        item.classList.add('flip-anim');
+        
+        setTimeout(() => {
+          el.innerText = val;
+          item.classList.remove('flip-anim');
+          item.classList.add('pop');
+          setTimeout(() => item.classList.remove('pop'), 200);
+        }, 120);
+      }
+    }
+    
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    let qrDone = false;
+    function openQR() {
+      document.getElementById('qrModal').style.display = 'flex';
+      if (!qrDone) {
+        document.getElementById("qrcode").innerHTML = "";
+        new QRCode(document.getElementById("qrcode"), {
+          text: "https://mo-hishame.github.io/KANZAYAA/",
+          width: 135, 
+          height: 135,
+          colorDark: "#8b263e", 
+          colorLight: "#ffffff"
+        });
+        qrDone = true;
+      }
+    }
+    function closeQR() { document.getElementById('qrModal').style.display = 'none'; }
+  </script>
+</body>
+</html>
